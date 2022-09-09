@@ -21,6 +21,14 @@
                 </button>
             </div>
         </div>
+        <div class="flex justify-between items-end mt-2">
+            <div>
+                <label class="flex items-center mr-2">
+                    <input type="checkbox" wire:model="hideNoSalary" class="checkbox" checked="">
+                    <span class="ml-2">Schovat zaměstnance bez výplaty</span>
+                </label>
+            </div>
+        </div>
         <!--</editor-fold desc="SEARCH">-->
 
         <div class="pt-4 px-2 -mx-2 overflow-x-auto">

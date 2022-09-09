@@ -17,6 +17,7 @@ class SalariesTable extends Component
     public string $search = '';
     public string $orderBy = 'surname';
     public bool $sortAsc = false;
+    public bool $hideNoSalary = false;
 
     public array $filters = ['all' => 'Vše', 'name' => 'Jméno', 'surname' => 'Příjmení', 'salary' => 'Výplata', 'employeer' => 'Zaměstnavatel'];
     public string $filter = 'all';
@@ -32,6 +33,9 @@ class SalariesTable extends Component
         $employees = Employee::select('employees.*', 'salaries.id as salaryId', 'salaries.salary', 'employeers.id as employeerId', 'employeers.name as employeerName')
             ->leftJoin('salaries', 'salaries.id', 'employees.active_salary_id')
             ->leftJoin('employeers', 'employeers.id', 'salaries.employeer_id')
+            ->when($this->hideNoSalary, function (Builder $query) {
+                $query->whereNotNull('salaries.salary');
+            })
             ->when($this->search !== '', function (Builder $query) {
                 $query->when($this->filter === 'all', function(Builder $searchQuery) {
                     $searchQuery->where('employees.name', 'LIKE', '%' . $this->search . '%')
