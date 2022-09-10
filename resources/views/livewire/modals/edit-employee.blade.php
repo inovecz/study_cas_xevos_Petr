@@ -38,7 +38,7 @@
         <div class="w-full px-4 py-2 bg-blue-500/10 flex justify-end space-x-4">
             <button wire:loading.remove wire:target="submit" wire:click="$emit('closeModal')" class="btn btn-link">Zrušit</button>
             <button wire:loading wire:target="submit" class="btn btn-primary" disabled>Provádím<i class="fa-solid fa-spinner fa-spin-pulse ml-2"></i></button>
-            <button wire:loading.remove wire:target="submit" wire:click="submit" class="btn btn-primary">Uložit</button>
+            <button wire:loading.remove wire:target="submit" class="btn btn-primary">Uložit</button>
         </div>
     </form>
 </div>

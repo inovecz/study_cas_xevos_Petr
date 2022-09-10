@@ -80,5 +80,6 @@ class SalariesTable extends Component
         $service = new RemoteDataFetchService();
         $service->fetchEmployees();
         $service->fetchSalaries();
+        $this->dispatchBrowserEvent('alert', ['type' => 'success',  'message' => "Vzdálená data byla úspěšně importována!"]);
     }
 }

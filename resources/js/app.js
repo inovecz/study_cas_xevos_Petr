@@ -5,6 +5,9 @@ import '@fortawesome/fontawesome-free/scss/regular.scss';
 import '@fortawesome/fontawesome-free/scss/solid.scss';
 import '@fortawesome/fontawesome-free/scss/v4-shims.scss';
 import Alpine from 'alpinejs'
+import toastr from "toastr/toastr";
 
 window.Alpine = Alpine
 Alpine.start()
+
+window.toastr = toastr;

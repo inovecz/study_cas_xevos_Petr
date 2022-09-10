@@ -15,18 +15,6 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @livewireStyles
-
-        <script>
-            if (
-                localStorage.getItem('color-theme') === 'dark' ||
-                (!('color-theme' in localStorage) &&
-                    window.matchMedia('(prefers-color-scheme: dark)').matches)
-            ) {
-                document.documentElement.classList.add('dark');
-            } else {
-                document.documentElement.classList.remove('dark');
-            }
-        </script>
     </head>
 
     <body class="bg-gray-200">
@@ -36,6 +24,32 @@
                 <a href="https://github.com/inDeev" target="_blank" class="text-blue-500 hover:text-blue-700">Petr Katerinak</a></div>
         </footer>
         @livewireScripts
+
+        <script>
+            window.addEventListener('alert', event => {
+                console.log('toastr called', event.detail);
+                toastr[event.detail.type](event.detail.message, event.detail.title ?? '',
+                    toastr.options = {
+                        "closeButton": true,
+                        "debug": false,
+                        "newestOnTop": false,
+                        "progressBar": true,
+                        "positionClass": "toast-bottom-right",
+                        "preventDuplicates": false,
+                        "onclick": null,
+                        "showDuration": 300,
+                        "hideDuration": 1000,
+                        "timeOut": 5000,
+                        "extendedTimeOut": 1000,
+                        "showEasing": "swing",
+                        "hideEasing": "linear",
+                        "showMethod": "fadeIn",
+                        "hideMethod": "fadeOut"
+                    }
+                );
+            });
+        </script>
+
         @livewire('livewire-ui-modal')
         @stack('scripts')
     </body>
