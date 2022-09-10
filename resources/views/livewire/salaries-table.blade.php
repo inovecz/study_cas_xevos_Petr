@@ -55,15 +55,15 @@
                                 </a>
                             </th>
                             <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                                <a class="cursor-pointer whitespace-nowrap" wire:click="orderBy('salary')">
+                                <a class="cursor-pointer whitespace-nowrap" wire:click="orderBy('salariesSalary')">
                                     Výplata
-                                    <x-sort-icon field="salary" :orderBy="$orderBy" :sortAsc="$sortAsc" />
+                                    <x-sort-icon field="salariesSalary" :orderBy="$orderBy" :sortAsc="$sortAsc" />
                                 </a>
                             </th>
                             <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                                <a class="cursor-pointer whitespace-nowrap" wire:click="orderBy('employeerName')">
+                                <a class="cursor-pointer whitespace-nowrap" wire:click="orderBy('employeersName')">
                                     Zaměstnavatel
-                                    <x-sort-icon field="employeerName" :orderBy="$orderBy" :sortAsc="$sortAsc" />
+                                    <x-sort-icon field="employeersName" :orderBy="$orderBy" :sortAsc="$sortAsc" />
                                 </a>
                             </th>
                             <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-gray-700">
@@ -90,10 +90,10 @@
                                     <p class="text-lg text-gray-900 whitespace-no-wrap">{{ $employee->getRemoteDate() ? $employee->getRemoteDate()->format('d.m.Y') : '-' }}</p>
                                 </td>
                                 <td class="px-5 py-5 border-b border-gray-200 text-sm">
-                                    <p class="text-lg text-gray-900 whitespace-no-wrap">{{ $employee->activeSalary ? format_price($employee->activeSalary->getSalary(), 0) : '-' }}</p>
+                                    <p class="text-lg text-gray-900 whitespace-no-wrap">{{ $employee->salariesSalary ? format_price($employee->salariesSalary, 0) : '-' }}</p>
                                 </td>
                                 <td class="px-5 py-5 border-b border-gray-200 text-sm">
-                                    <p class="text-lg text-gray-900 whitespace-no-wrap">{{ $employee->activeSalary ? $employee->activeSalary->employeer->getName(): '-' }}</p>
+                                    <p class="text-lg text-gray-900 whitespace-no-wrap">{{ $employee->employeersName ?? '-' }}</p>
                                 </td>
 
                                 <td class="px-5 py-5 border-b border-gray-200 text-sm text-right">

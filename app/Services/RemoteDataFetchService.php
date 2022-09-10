@@ -15,24 +15,20 @@ class RemoteDataFetchService
         'Zamestnavatel3' => 'https://xevos.store/domaci-ukol/Zamestnavatel3.json',
     ];
 
-    /** @return int count of fetched employees
-     * @throws \JsonException
+    /** @throws \JsonException
      */
-    public function fetchEmployees(): int
+    public function fetchEmployees(): void
     {
         $employees = $this->sendRequest(self::EMPLOYEES_URL);
         $employees = collect($employees)->map(static fn($employee) => ['remote_id' => $employee['id'], 'name' => $employee['jmeno'], 'surname' => $employee['prijmeni'], 'remote_date' => Carbon::parse($employee['date'])]);
 
-        \DB::beginTransaction();
-        foreach ($employees as $employee) {
-            if (Employee::where('remote_id', $employee['remote_id'])->exists()) {
-                Employee::where('remote_id', $employee['remote_id'])->update($employee);
-            } else {
-                Employee::create($employee);
-            }
-        }
-        \DB::commit();
-        return count($employees);
+        $employeesIds = $employees->pluck('remote_id')->values();
+        $existing = Employee::whereIn('remote_id', $employeesIds)->pluck('remote_id')->values()->toArray();
+
+        $employeesToUpdate = $employees->filter(fn($employee) => in_array($employee['remote_id'], $existing, false))->toArray();
+        $employeesToCreate = $employees->reject(fn($employee) => in_array($employee['remote_id'], $existing, false))->toArray();
+        Employee::upsert($employeesToUpdate, 'remote_id');
+        Employee::insert($employeesToCreate);
     }
 
     public function fetchSalaries(): void
@@ -44,7 +40,7 @@ class RemoteDataFetchService
             $salaries = $this->sendRequest($employeerUrl);
             collect($salaries)->map(static fn($salary) => ['name' => $salary['jmeno'], 'surname' => $salary['prijmeni'], 'salary' => $salary['plat']])
                 ->each(static function ($salary) use ($employeer, $localEmployeer) {
-                    $employee = Employee::where('name', $salary['name'])->where('surname', $salary['surname'])->first();
+                    $employee = Employee::with('salaries')->where('name', $salary['name'])->where('surname', $salary['surname'])->first();
                     if ($employee) {
                         $salary = $employee->salaries()->updateOrCreate(['employee_id' => $employee->getRemoteId(), 'employeer_id' => $employeer->getID()], ['salary' => $salary['salary']]);
                         $activeSalary = $employee->activeSalary;

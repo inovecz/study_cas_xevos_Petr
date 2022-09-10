@@ -19,10 +19,10 @@ class SalariesTable extends Component
     public bool $sortAsc = false;
     public bool $hideNoSalary = false;
 
-    public array $filters = ['all' => 'Vše', 'name' => 'Jméno', 'surname' => 'Příjmení', 'salary' => 'Výplata', 'employeer' => 'Zaměstnavatel'];
+    public array $filters = ['all' => 'Vše', 'name' => 'Jméno', 'surname' => 'Příjmení', 'salariesSalary' => 'Výplata', 'employeersName' => 'Zaměstnavatel'];
     public string $filter = 'all';
 
-    protected $queryString = ['filter', 'search', 'orderBy', 'sortAsc'];
+    protected $queryString = ['filter', 'search', 'orderBy', 'sortAsc', 'hideNoSalary'];
 
     protected $listeners = [
         'refreshList' => '$refresh'
@@ -30,13 +30,12 @@ class SalariesTable extends Component
 
     public function render()
     {
-        $employees = Employee::select('employees.*', 'salaries.id as salaryId', 'salaries.salary', 'employeers.id as employeerId', 'employeers.name as employeerName')
+        $employees = Employee::select('employees.*', 'salaries.salary as salariesSalary', 'employeers.name as employeersName')
             ->leftJoin('salaries', 'salaries.id', 'employees.active_salary_id')
             ->leftJoin('employeers', 'employeers.id', 'salaries.employeer_id')
             ->when($this->hideNoSalary, function (Builder $query) {
                 $query->whereNotNull('salaries.salary');
-            })
-            ->when($this->search !== '', function (Builder $query) {
+            })->when($this->search !== '', function (Builder $query) {
                 $query->when($this->filter === 'all', function(Builder $searchQuery) {
                     $searchQuery->where('employees.name', 'LIKE', '%' . $this->search . '%')
                         ->orWhere('surname', 'LIKE', '%' . $this->search . '%')
@@ -47,9 +46,9 @@ class SalariesTable extends Component
                     $searchQuery->where('employees.name', 'LIKE', '%' . $this->search . '%');
                 })->when($this->filter === 'surname', function(Builder $searchQuery) {
                     $searchQuery->where('surname', 'LIKE', '%' . $this->search . '%');
-                })->when($this->filter === 'salary', function(Builder $searchQuery) {
+                })->when($this->filter === 'salariesSalary', function(Builder $searchQuery) {
                     $searchQuery->where('salaries.salary', 'LIKE', '%' . Str::replace(' ', '', $this->search) . '%');
-                })->when($this->filter === 'employeer', function(Builder $searchQuery) {
+                })->when($this->filter === 'employeersName', function(Builder $searchQuery) {
                     $searchQuery->where('employeers.name', 'LIKE', '%' . $this->search . '%');
                 });
             })->when($this->orderBy !== '', function (Builder $orderQuery) {
